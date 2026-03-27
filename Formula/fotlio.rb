@@ -9,21 +9,29 @@ class Fotlio < Formula
   head "https://github.com/mevinsh/photo-organiser.git", branch: "main"
 
   depends_on "ffmpeg"
-  depends_on "uv"
+  depends_on "python@3.12"
 
   def install
-    # Create an isolated Python virtual environment in Homebrew's libexec
-    system "uv", "venv", libexec
+    venv = libexec/"venv"
 
-    # Install fotlio + all its Python dependencies into that venv
-    system "uv", "pip", "install",
-           "--python", libexec/"bin/python",
-           "--no-cache",
-           buildpath
+    # Create a venv using Homebrew's own python3.12 (stable, permanent path)
+    system Formula["python@3.12"].opt_bin/"python3.12", "-m", "venv", venv
 
-    # Expose the fotlio binary via Homebrew's bin directory
-    bin.install_symlink libexec/"bin/fotlio"
-    bin.install_symlink libexec/"bin/photo-organiser"
+    # Install fotlio + all Python dependencies into the venv
+    system venv/"bin/pip", "install", "--no-cache-dir", buildpath
+
+    # Write bash wrapper scripts so we never rely on the venv shebang path
+    (bin/"fotlio").write <<~BASH
+      #!/bin/bash
+      exec "#{venv}/bin/fotlio" "$@"
+    BASH
+    chmod 0755, bin/"fotlio"
+
+    (bin/"photo-organiser").write <<~BASH
+      #!/bin/bash
+      exec "#{venv}/bin/photo-organiser" "$@"
+    BASH
+    chmod 0755, bin/"photo-organiser"
   end
 
   test do
