@@ -1,7 +1,7 @@
 class Fotlio < Formula
   desc "Your photo library, beautifully organised"
   homepage "https://github.com/mevinsh/photo-organiser"
-  url "https://github.com/mevinsh/photo-organiser/archive/fd960bb7f59740e032713011994104929920de5b.tar.gz"
+  url "https://github.com/mevinsh/photo-organiser/archive/refs/heads/main.tar.gz"
   version "1.0.0"
   sha256 "0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5"
   license "MIT"
